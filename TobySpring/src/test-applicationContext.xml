@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@192.168.1.208:1521:XE" />
+		<property name="username" value="han" />
+		<property name="password" value="1" />
+	</bean>
+	
+	<bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="userService" class="springbook.user.service.UserServiceTx">
+		<property name="transactionManager" ref ="transactionManager" />
+		<property name="userService" ref ="userServiceImpl" />
+	</bean>
+	
+	<bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">
+		<property name="userDao" ref ="userDao" />
+		<property name="mailSender" ref ="mailSender" />
+	</bean>
+						
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="mailSender" class="springbook.user.service.DummyMailSender" />
+
+	
+</beans>
