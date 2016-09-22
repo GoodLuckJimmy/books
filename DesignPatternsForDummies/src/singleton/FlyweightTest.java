@@ -30,7 +30,7 @@ class StudentThreaded {
 		return averageScore;
 	}
 
-	public double getStanding() { // ½Ã½ºÅÛ ¸®¼Ò½º¸¦ ¸¹ÀÌ Àâ¾Æ¸Ô´Â ³ğÀÌ¶ó °¡Á¤
+	public double getStanding() { // ì‹œìŠ¤í…œ ë¦¬ì†ŒìŠ¤ë¥¼ ë§ì´ ì¡ì•„ë¨¹ëŠ” ë†ˆì´ë¼ ê°€ì •. ë¹„ìš©ì´ í° ìì›ì„ ê³µí†µìœ¼ë¡œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ ë§Œë“œëŠ” íŒ¨í„´
 		return (((double) score) / averageScore - 1.0) * 100.0; 
 	}
 	
