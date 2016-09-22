@@ -12,7 +12,7 @@ class DatabaseThreaded {
 	}
 	
 	public static synchronized DatabaseThreaded getInstance(String n) {
-		// singleObject 최초에 new안했을 경우 
+		// singleObject 최초에 new안했을 경우 4번째라인
 		// if (singleObject == null) {
 		// 	singleObject = new DatabaseThreaded(n);
 		// }
