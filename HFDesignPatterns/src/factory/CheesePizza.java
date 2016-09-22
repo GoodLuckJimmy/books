@@ -1,11 +1,16 @@
 package factory;
 
 public class CheesePizza extends Pizza {
-	public CheesePizza() {
-		name = "Cheese Pizza";
-		dough = "Regular Crust";
-		sauce = "Marinara Pizza Sauce";
-		toppings.add("Fresh Mozzarella");
-		toppings.add("Parmesan");
+	PizzaIngredientFactory ingredientFactory;
+ 
+	public CheesePizza(PizzaIngredientFactory ingredientFactory) {
+		this.ingredientFactory = ingredientFactory;
+	}
+ 
+	void prepare() {
+		System.out.println("Preparing " + name);
+		dough = ingredientFactory.createDough();
+		sauce = ingredientFactory.createSauce();
+		cheese = ingredientFactory.createCheese();
 	}
 }
