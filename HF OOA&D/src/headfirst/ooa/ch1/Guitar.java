@@ -1,15 +1,15 @@
+package headfirst.ooa.ch1;
 public class Guitar {
 
   private String serialNumber;
   private double price;
   GuitarSpec spec;
 
-  public Guitar(String serialNumber, double price, 
-                Builder builder, String model, Type type,
-                Wood backWood, Wood topWood) {
+  public Guitar(String serialNumber, double price, GuitarSpec spec) {
+
     this.serialNumber = serialNumber;
     this.price = price;
-    this.spec = new GuitarSpec(builder, model, type, backWood, topWood);
+    this.spec = spec;
   }
 
   public String getSerialNumber() {
