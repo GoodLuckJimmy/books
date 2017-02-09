@@ -1,4 +1,4 @@
-package headfirst.ooa.ch5;
+package headfirst.ooa.ch5.part1;
 
 public abstract class Instrument {
 

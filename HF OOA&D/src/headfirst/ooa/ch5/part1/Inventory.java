@@ -1,4 +1,4 @@
-package headfirst.ooa.ch5;
+package headfirst.ooa.ch5.part1;
 
 import java.util.Iterator;
 import java.util.LinkedList;
