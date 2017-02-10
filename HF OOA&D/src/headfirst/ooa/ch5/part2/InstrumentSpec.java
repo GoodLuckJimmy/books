@@ -1,53 +1,39 @@
 package headfirst.ooa.ch5.part2;
 
-public abstract class InstrumentSpec {
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-	private Builder builder;
-	private String model;
-	private Type type;
-	private Wood backWood;
-	private Wood topWood;
+public class InstrumentSpec {
 
-	public InstrumentSpec(Builder builder, String model, Type type, Wood backWood, Wood topWood) {
-		this.builder = builder;
-		this.model = model;
-		this.type = type;
-		this.backWood = backWood;
-		this.topWood = topWood;
+	private Map<String, Object> properties;
+	
+	public InstrumentSpec(Map<String, Object> properties) {
+		if (properties == null) {
+			this.properties = new HashMap<>();
+		} else {
+			this.properties = new HashMap<>(properties);
+		}
+	}
+	
+	public Object getPropertiy(String propertyName) {
+		return properties.get(propertyName);
+	}
+	
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
 	public boolean matches(InstrumentSpec otherSpec) {
-		if (builder != otherSpec.builder)
-			return false;
-		if ((model != null) && (!model.equals("")) && (!model.toLowerCase().equals(otherSpec.model.toLowerCase())))
-			return false;
-		if (type != otherSpec.type)
-			return false;
-		if (backWood != otherSpec.backWood)
-			return false;
-		if (topWood != otherSpec.topWood)
-			return false;
+		for (Iterator<String> i = otherSpec.getProperties().keySet().iterator(); i.hasNext();) {
+			String propertyName = (String) i.next();
+			
+			if (!properties.get(propertyName).equals(otherSpec.getPropertiy(propertyName))) {
+				return false;
+			}
+		}
 		return true;
 	}
 
-	public Builder getBuilder() {
-		return builder;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public Wood getBackWood() {
-		return backWood;
-	}
-
-	public Wood getTopWood() {
-		return topWood;
-	}
 
 }

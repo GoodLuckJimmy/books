@@ -1,6 +1,6 @@
 package headfirst.ooa.ch5.part2;
 
-public abstract class Instrument {
+public class Instrument {
 
 	private String serialNumber;
 	private double price;
