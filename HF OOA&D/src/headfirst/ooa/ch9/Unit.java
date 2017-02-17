@@ -55,9 +55,16 @@ public class Unit {
 
 	public Object getProperty(String property) {
 		if (properties == null) {
-			return null;
+			throw new RuntimeException("No properties for this Unit.");
 		}
-		return properties.get(property);
+		
+		Object value = properties.get(property);
+		
+		if (value == null) {
+			throw new RuntimeException("Request for non-existent property.");
+		} else {
+			return value;
+		}
 	}
 
 	public void setProperty(String property, Object value) {
