@@ -4,12 +4,15 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
@@ -20,6 +23,8 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 public class ContextTest {
 
+	private String basePath = StringUtils.cleanPath(ClassUtils.classPackageAsResourcePath(getClass())) + "/";
+	
 	@Test
 	public void staticApplicationContext() {
 
@@ -71,9 +76,11 @@ public class ContextTest {
 	@Test
 	public void genericApplicationContextWithXml() {
 		GenericApplicationContext ac = new GenericApplicationContext();
+
 		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(ac);
 		// classpath: file: http: 접두어 가능
-		reader.loadBeanDefinitions("springbook2/ch1/genericApplicationContext.xml");
+		reader.loadBeanDefinitions(basePath + "genericApplicationContext.xml");
+
 		ac.refresh();
 		
 		Hello hello = ac.getBean("hello", Hello.class);
@@ -87,7 +94,7 @@ public class ContextTest {
 	public void genericXmlApplicationContext() {
 		// GenericXmlApplicationContext = GenericApplicationContext + XmlBeanDefinitionReader + refresh
 		GenericApplicationContext ac = new GenericXmlApplicationContext(
-				"springbook2/ch1/genericApplicationContext.xml");
+				basePath + "genericApplicationContext.xml");
 		
 		Hello hello = ac.getBean("hello", Hello.class);
 		hello.print();
@@ -96,16 +103,19 @@ public class ContextTest {
 		
 	}
 	
+	@Test(expected=BeanCreationException.class)
+	public void createContextWithoutParent() {
+		ApplicationContext child = new GenericXmlApplicationContext(basePath + "childContext.xml");
+	}
+	
 	@Test
-	public void TreeApplicationConxtext() {
-		String basePath = StringUtils.cleanPath(ClassUtils.classPackageAsResourcePath(getClass())) + "/";
+	public void contextHierachy() {
 
 		ApplicationContext parent = new GenericXmlApplicationContext(basePath + "parentContext.xml");
+
 		GenericApplicationContext child = new GenericApplicationContext(parent);
-		
 		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(child);
 		reader.loadBeanDefinitions(basePath + "childContext.xml");
-
 		child.refresh();
 		
 		Printer printer = child.getBean("printer", Printer.class);
@@ -135,7 +145,14 @@ public class ContextTest {
 	}
 	
 	@Test
-	public void usingConfigurationAnno() {
+	public void filteredBeanScanning() {
+		//ApplicationContext ctx = new GenericXmlApplicationContext(basePath + "filteredScanningContext.xml");
+		//Hello hello = ctx.getBean("hello", Hello.class);
+		//assertThat(hello, is(notNullValue()));
+	}
+	
+	@Test
+	public void configurationBean() {
 		ApplicationContext ctx =
 				new AnnotationConfigApplicationContext(AnnotatedHelloConfig.class);
 
@@ -146,5 +163,28 @@ public class ContextTest {
 		// config 클래스자체도 하나의 빈으로 등록됨
 		AnnotatedHelloConfig config = ctx.getBean("annotatedHelloConfig", AnnotatedHelloConfig.class);
 		assertThat(config, is(notNullValue()));
+		
+		assertThat(config.annotatedHello(), is(sameInstance(hello))); //singleton
+		assertThat(config.annotatedHello(), is(config.annotatedHello()));
+		
+		System.out.println(ctx.getBean("systemProperties").getClass());
+	}
+	
+	@Test
+	public void constructorArg() {
+		// AnnotationConfigApplicationContext를 사용하면 등록할 빈 클래스 직접 지정가능
+		AbstractApplicationContext ac =
+				new AnnotationConfigApplicationContext(BeanA.class, BeanB.class);
+		BeanA beanA = ac.getBean(BeanA.class);
+
+		assertThat(beanA.beanB, is(notNullValue()));
+		
+	}
+	
+	private static class BeanA {
+		@Autowired BeanB beanB;
+	}
+	
+	private static class BeanB {
 	}
 }
