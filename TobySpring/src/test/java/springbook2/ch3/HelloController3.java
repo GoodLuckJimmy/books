@@ -2,6 +2,9 @@ package springbook2.ch3;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
+@Component("/hello")
 public class HelloController3 implements CustomController {
 	@ViewName("/WEB-INF/view/hello.jsp")
 	@RequiredParams({"name"})

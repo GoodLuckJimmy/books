@@ -13,6 +13,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
 
+// 빈으로 등록하면 스프링에서 supports함수를 이용해 자동 호출함
 public class CustomSimpleHandlerAdapter implements HandlerAdapter{
 
 	@Override
