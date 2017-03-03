@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.url">
+			jdbc:mysql://db4free.net:33067/db4freehan
+		</property>
+		<property name="connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<property name="connection.username">
+			db4freehan
+		</property>
+		<property name="connection.password">
+			db4freehanpw
+		</property>
+		<property name="dialect">
+			org.hibernate.dialect.MySQL5Dialect
+		</property>
+
+		<!-- 옵션 -->
+		<!-- 테이블 없으면 자동생성. 스키마 변동시 자동변경. 상용서비스시에는 사용금지 -->
+		<property name="hbm2ddl.auto">update</property> <!-- validate,update,create, create-drop  -->
+		
+		<property name="hibernate.show_sql" value="true" /> <!-- 모든 sql문 출력  -->
+		<property name="hibernate.format_sql" value="true" /> <!-- SQL을 보기 좋게 정렬함. -->
+		<property name="hibernate.use_sql_comments" value="true" /> <!-- 쿼리 출력 시 주석도 함께 출력  -->
+		<property name="hibernate.id.new_generator_mappings" value="true" />
+		<property name="hibernate.jdbc.fetch_size" value="10" /> <!-- jdbc 조회크기설정  -->
+		<property name="hibernate.jdbc.batch_size" value="10" /> <!-- 쿼리문 일괄 실행  -->
+		<property name="hibernate.connection.pool_size" value="10" /> <!-- 커넥션 풀 크기 -->
+
+		<!-- 어노테이션으로 대체가능
+		<mapping resource="Movie.hbm.xml" />
+		<mapping resource="Account.hbm.xml" />
+		<mapping resource="Trade.hbm.xml" />
+		-->
+	</session-factory>
+</hibernate-configuration>
