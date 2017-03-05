@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="just_Hibernate.ch5.oneToOne.기본키사용">
+	<class name="Car" table="CAR">
+		<id name="id" column="CAR_ID">
+			<generator class="assigned" />
+		</id>
+		<property name="name" column="NAME" />
+		<property name="color" column="COLOR" />
+		<one-to-one name="engine" class="Engine" cascade="all" />
+	</class>
+	
+	<class name="Engine" table="ENGINE">
+		<id name="id" column="CAR_ID">
+			<generator class="foreign" >
+				<param name="property">car</param>
+			</generator>
+		</id>
+		<property name="make" column="MAKE" />
+		<property name="model" column="MODEL" />
+		<property name="size" column="SIZE" />
+		<one-to-one name="car" class="Car" constrained="true" />
+	</class>
+
+</hibernate-mapping>
