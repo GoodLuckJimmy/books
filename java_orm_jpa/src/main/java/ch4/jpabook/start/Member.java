@@ -2,6 +2,8 @@ package ch4.jpabook.start;
 
 import java.util.Date;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 @Entity
@@ -28,6 +31,7 @@ import javax.persistence.UniqueConstraint;
                     allocationSize = 1 // 기본값 50
                     )
 */
+@Access(AccessType.FIELD) // 필드에 직접접근. AccessType.PROPERTY는 getter사용. @Id있으면 FIELD로 자동세팅
 public class Member {
 
     @Id
@@ -53,10 +57,21 @@ public class Member {
     @Lob
     private String description;
 
+    @Transient // 매핑하지 않는다. db저장, 조회하지 않는다. 객체에 임시로 어떤값 보관시 사용
+    private String firstName;
+
+    @Transient
+    private String lastName;
+    
+    @Access(AccessType.PROPERTY) // 기본은 필드접근. getFullName만 프로퍼티 접근. 테이블 FULLNAME컬럼에 first + last name이 저장
+    public String getFullName() {
+        return firstName + lastName;
+    }
+
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
