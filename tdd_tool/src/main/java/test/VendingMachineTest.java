@@ -13,7 +13,7 @@ public class VendingMachineTest {
 		ChangeModule module = new ChangeModule();
 		CoinSet expectedCoinSet = new CoinSet();
 		expectedCoinSet.add(50);
-		assertThat("700원 투입후 650우너 음료선택", expectedCoinSet, is(module.getChangeCoinSet(50)));
+		assertThat("700원 투입후 650원 음료선택", expectedCoinSet, is(module.getChangeCoinSet(50)));
 	}
 	
 	@Test

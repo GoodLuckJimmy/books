@@ -12,23 +12,19 @@ public class ChangeModule {
 	public CoinSet getChangeCoinSet(int changeAmount) {
 		CoinSet coinSet = new CoinSet();
 		
-		final int KRW500 = COIN.KRW500.value;
-		final int KRW100 = 100;
-		final int KRW50 = 50;
-		final int KRW10 = 10;
-
-		changeAmount = addCoinsToCoinSet(changeAmount, coinSet, KRW500);
-		changeAmount = addCoinsToCoinSet(changeAmount, coinSet, KRW100);
-		changeAmount = addCoinsToCoinSet(changeAmount, coinSet, KRW50);
-		changeAmount = addCoinsToCoinSet(changeAmount, coinSet, KRW10);
+		int remainChangeAmount = changeAmount;
+		
+		for (COIN coin : COIN.values()) {
+			remainChangeAmount = addCoinsToCoinSet(remainChangeAmount, coinSet, coin.value);
+		}
 
 		return coinSet;
 	}
 
-	private int addCoinsToCoinSet(int changeAmount, CoinSet coinSet, int KRW500) {
-		while(changeAmount >= KRW500) {
-			changeAmount -= KRW500;
-			coinSet.add(KRW500);
+	private int addCoinsToCoinSet(int changeAmount, CoinSet coinSet, int coinValue) {
+		while(changeAmount >= coinValue) {
+			changeAmount -= coinValue;
+			coinSet.add(coinValue);
 		}
 		return changeAmount;
 	}
