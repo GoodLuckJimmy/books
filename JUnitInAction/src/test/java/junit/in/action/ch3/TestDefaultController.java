@@ -2,10 +2,13 @@ package junit.in.action.ch3;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
 
 public class TestDefaultController {
 	
@@ -63,6 +66,22 @@ public class TestDefaultController {
 		
 		// the following line is supposed to throw a RuntimeException
 		controller.addHandler(request, handler);
+	}
+	
+	@Test(timeout = 130)
+	@Ignore(value="Ignore for now untill we decide a decent time-limit")
+	public void testProcessMultipleRequestsTimeout() {
+		Request request;
+		Response response =  new SampleResponse();
+		RequestHandler handler = new SampleHandler();
+		
+		for (int i = 0; i < 99999; i++) {
+			request = new SampleRequest(String.valueOf(i));
+			controller.addHandler(request, handler);
+			response = controller.processRequest(request);
+			assertNotNull(response);
+			assertNotSame(ErrorResponse.class, response.getClass());
+		}
 	}
 	
 	////////////////////////////////////////////////////////////////////////////
