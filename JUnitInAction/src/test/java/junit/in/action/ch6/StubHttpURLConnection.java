@@ -10,7 +10,7 @@ import java.net.ProtocolException;
 
 public class StubHttpURLConnection extends HttpURLConnection {
 	private boolean isInput = true;
-	protected StubHttpURLConnection(URL url) {
+	public StubHttpURLConnection(URL url) {
 		super(url);
 	}
 	
