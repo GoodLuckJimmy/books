@@ -3,6 +3,7 @@ package junit.in.action.ch8;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,5 +53,13 @@ public class EasyMockSampleServletTest {
 		replay(mockHttpSession);
 		assertFalse(servlet.isAuthenticated(mockHttpServletRequest));
 	}
+	
+	@After
+	public void tearDown() {
+		verify(mockHttpServletRequest);
+		verify(mockHttpSession);
+	}
+	
+	
 
 }
