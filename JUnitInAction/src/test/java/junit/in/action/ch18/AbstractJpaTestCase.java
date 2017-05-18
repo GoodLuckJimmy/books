@@ -50,7 +50,6 @@ public abstract class AbstractJpaTestCase {
 	private static Connection getConnection(Object object) {
 		Connection connection = null;
 
-
 		if (object instanceof EntityManagerFactoryImpl) {
 			EntityManagerFactoryImpl impl =
 					(EntityManagerFactoryImpl) object;
