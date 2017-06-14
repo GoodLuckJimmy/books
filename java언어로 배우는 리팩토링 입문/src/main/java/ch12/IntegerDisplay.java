@@ -15,6 +15,9 @@ public class IntegerDisplay extends Frame implements ActionListener, ValueListen
 	
 	private Value value = new Value(0);
 	
+	private final Graph graphCircle = Graph.createGraph(Graph.CIRCLE, 100, 100);
+	private final Graph graphRectangle = Graph.createGraph(Graph.RECTANGLE, 100, 50);
+	
 	public IntegerDisplay() {
 		super("IntegerDisplay");
 		
@@ -32,6 +35,8 @@ public class IntegerDisplay extends Frame implements ActionListener, ValueListen
 		decrementButton.addActionListener(this);
 
 		value.addValueListener(this);
+		value.addValueListener(graphCircle);
+		value.addValueListener(graphRectangle);
 
 		addWindowListener(new WindowAdapter() {
 			@Override

@@ -3,6 +3,7 @@ package ch12;
 import java.awt.*;
 
 public class Graph extends Canvas implements ValueListener {
+	private static final long serialVersionUID = 1L;
 	public static final int RECTANGLE = 0;
 	public static final int CIRCLE = 1;
 	protected int graphValue;
@@ -26,6 +27,8 @@ public class Graph extends Canvas implements ValueListener {
 	}
 
 	private static class RectagleGraph extends Graph {
+		private static final long serialVersionUID = 3574849143374750386L;
+
 		@Override
 		public void paint(Graphics g) {
 			g.setColor(graphValue > 0 ? Color.BLUE : Color.RED);
@@ -46,6 +49,8 @@ public class Graph extends Canvas implements ValueListener {
 	}
 	
 	private static class CircleGraph extends Graph {
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public void paint(Graphics g) {
 			g.setColor(graphValue > 0 ? Color.BLUE : Color.RED);
