@@ -1,82 +1,72 @@
-//package ch9;
-//
-//public class Logger {
-//	private State _state;
-//	
-//	
-//	public Logger() {
-//		setState(State.STATE_STOPPED);
-//	}
-//	
-//	public State getState() {
-//		return _state;
-//	}
-//
-//	public void setState(State state) {
-//		_state = state;
-//	}
-//	
-//	public void start() {
-//		_state.start();
-//		setState(State.STATE_LOGGING);
-//	}
-//	
-//	public void stop() {
-//		_state.stop();
-//		setState(State.STATE_STOPPED);
-//	}
-//	
-//	public void log(String info) {
-//		_state.log(info);
-//	}
-//
-///*
-//	public void start() {
-////		switch (state) {
-//		switch (getState()) {
-//		case STATE_STOPPED:
-//			System.out.println("** START LOGGING");
-////			state = STATE_LOGGING;
-//			setState(STATE_LOGGING);
-//			break;
-//		case STATE_LOGGING:
-//			// do nothing
-//			break;
-//		default:
-////			System.out.println("Invalid state: " + state);
-//			System.out.println("Invalid state: " + getState());
-//		}
-//	}
-//	
-//	public void stop() {
-//		switch (getState()) {
-//		case STATE_STOPPED:
-//			// do nothing
-//			break;
-//		case STATE_LOGGING:
-//			System.out.println("** STOP LOGGING");
-////			state = STATE_STOPPED;
-//			setState(STATE_STOPPED);
-//			break;
-//		default:
-////			System.out.println("Invalid state: " + state);
-//			System.out.println("Invalid state: " + getState());
-//		}
-//	}
-//	
-//	public void log(String info) {
-//		switch (getState()) {
-//		case STATE_STOPPED:
-//			System.out.println("Ignoring: " + info);
-//			break;
-//		case STATE_LOGGING:
-//			System.out.println("Logging: " + info);
-////			state = STATE_STOPPED;
-//			break;
-//		default:
-////			System.out.println("Invalid state: " + state);
-//			System.out.println("Invalid state: " + getState());
-//		}
-//	}
-//*/
-//}
+package ch9;
+
+
+public class Logger {
+    public static final int STATE_STOPPED = 0;
+    public static final int STATE_LOGGING = 1;
+
+    private State state;
+
+    public Logger() {
+        this.state = new StateStopped();
+        setState(STATE_STOPPED);
+    }
+
+    public int getState() {
+        return state.getTypeCode();
+    }
+
+    public void setState(int _state) {
+        switch (_state) {
+            case STATE_STOPPED:
+                state = new StateStopped();
+                break;
+            case STATE_LOGGING:
+                state = new StateLogging();
+                break;
+                default:
+                    System.out.println("Invalid state: " + state);
+        }
+    }
+
+    public void start() {
+            switch (getState()) {
+                case STATE_STOPPED:
+                    System.out.println("** START LOGGING **");
+                    setState(STATE_LOGGING);
+                    break;
+                case STATE_LOGGING:
+                    break;
+                default:
+                    System.out.println("Invalid state: " + state);
+            }
+
+    }
+
+    public void stop() {
+        switch (getState()) {
+            case STATE_STOPPED:
+                break;
+            case STATE_LOGGING:
+                System.out.println("** STOP LOGGING **");
+                setState(STATE_STOPPED);
+                break;
+            default:
+                System.out.println("Invalid state: " + state);
+        }
+
+    }
+
+    public void log(String info) {
+        switch (getState()) {
+            case STATE_STOPPED:
+                System.out.println("Ignoring: " + info);
+                break;
+            case STATE_LOGGING:
+                System.out.println("** LOGGING: " + info);
+                break;
+            default:
+                System.out.println("Invalid state: " + state);
+        }
+    }
+}
