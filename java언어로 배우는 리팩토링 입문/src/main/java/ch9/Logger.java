@@ -40,7 +40,6 @@ public class Logger {
                 default:
                     System.out.println("Invalid state: " + state);
             }
-
     }
 
     public void stop() {
