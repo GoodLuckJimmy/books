@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping>
+	<class name="just_Hibernate.ch1.Movie" table="MOVIES">
+		<id name="id" column="ID">
+			<generator class="assigned" > <!-- 식별자 생성 identity, sequence, native, assigned  -->
+				<!-- <param name="sequence">MOVIE_SEQUENCE</param> --> <!-- db 시퀀스 사용시  -->
+			</generator>
+		</id>
+		<property name="title" column="TITLE" />
+		<property name="director" column="DIRECTOR" />
+		<property name="synopsis" column="SYNOPSIS" />
+	</class>
+</hibernate-mapping>

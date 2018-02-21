@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="just_Hibernate.ch5.manyToMany">
+
+	<class name="Person" table="PERSON">
+		<id name="id" column="PERSON_ID">
+			<generator class="native" />
+		</id>
+		<property name="firstName" column="FIRST_NAME" />
+		<!-- ...  -->
+		<component name="homePhone" class="PhoneNumber">
+			<property name="areaCode" column="HOME_AREA_CODE" />
+			<property name="phoneNumber" column="HOME_PHONE_NUMBER" />
+			<property name="name" column="HOME_NAME" />
+		</component>
+		<component name="mobilePhone" class="PhoneNumber">
+			<property name="areaCode" column="MOBILE_AREA_CODE" />
+			<property name="phoneNumber" column="MOBILE_PHONE_NUMBER" />
+			<property name="name" column="MOBILE_NAME" />
+		</component>
+	</class>
+
+</hibernate-mapping>

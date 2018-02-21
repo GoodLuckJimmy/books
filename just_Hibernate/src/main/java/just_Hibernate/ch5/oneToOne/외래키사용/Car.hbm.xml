@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="just_Hibernate.ch5.oneToOne.외래키사용">
+	<class name="Car" table="CAR_V2">
+		<id name="id" column="CAR_ID">
+			<generator class="assigned" />
+		</id>
+		<property name="name" column="NAME" />
+		<property name="color" column="COLOR" />
+		<!-- unique="true"는 다대일 관계를 일대일관계로 만든다. -->
+		<many-to-one name="engine" class="Engine" column="engine_id" unique="true" cascade="all" />
+	</class>
+	
+	<!-- 외래키 사용 -->
+	<class name="Engine" table="ENGINE_V2">
+		<id name="id" column="Engine_ID">
+			<generator class="assigned" />
+		</id>
+		<property name="make" column="MAKE" />
+		<property name="model" column="MODEL" />
+		<property name="size" column="SIZE" />
+		<one-to-one name="car" class="Car" constrained="true" />
+	</class>
+
+</hibernate-mapping>
