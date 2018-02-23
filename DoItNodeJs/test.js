@@ -18,3 +18,10 @@ var add_history = add(10, 10, function (result) {
 console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
 console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
 console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
+
+var url = require('url');
+var curURL = url.parse('https://m.search.naver.com/search.naver?query=steve+jobs');
+var curStr = url.format(curURL);
+
+console.log('주소 문자열 : %s', curStr);
+console.dir(curURL);
