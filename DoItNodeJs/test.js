@@ -1,27 +1,34 @@
-function add(a, b, callback) {
-    var result = a + b;
-    callback(result);
+var http = require('http');
 
-    var count = 0;
-    var history = function () {
-        count++;
-       return count + ' : ' + a + ' + ' + b + ' = ' + result;
-    };
-    return history;
-}
+var server = http.createServer();
 
-var add_history = add(10, 10, function (result) {
-    console.log('callback is called!')
-    console.log('더하기 (10, 10)의 결과: %d', result);
+var port = 3000;
+server.listen(port, function() {
+    console.log('server started: %d', port);
 });
 
-console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
-console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
-console.log('결과 값으로 받은 함수 실행결과 : ' + add_history());
+server.on('connection', function(socket) {
+    var addr = socket.address();
+    console.log('클라이언트가 접속했습니다.: %s, %d', addr.address, addr.port);
+});
 
-var url = require('url');
-var curURL = url.parse('https://m.search.naver.com/search.naver?query=steve+jobs');
-var curStr = url.format(curURL);
+server.on('request', function (req, res) {
+   console.log('클라이언트 요청이 들어왔습니다.');
 
-console.log('주소 문자열 : %s', curStr);
-console.dir(curURL);
+   res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+   res.write("<!DOCTYPE html>");
+   res.write("<html>");
+   res.write("<head>");
+   res.write("<title>응답 페이지</title>");
+   res.write("</head>");
+    res.write("<body>");
+    res.write("<h1>hellO world</h1>");
+    res.write("</body>");
+    res.write("</html>");
+    res.end();
+
+});
+
+server.on('close', function () {
+   console.log('서버가 종료됩니다.')
+})
