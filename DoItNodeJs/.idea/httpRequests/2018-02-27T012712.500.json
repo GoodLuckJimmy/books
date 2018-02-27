@@ -1,0 +1,4 @@
+{
+  "status": 500,
+  "message": "database.collection is not a function"
+}
