@@ -22,7 +22,11 @@ var app = express();
 
 var mongoose = require('mongoose');
 
-var user = require('./routes/users');
+var user = require('./routes/user');
+
+var config = require('./config/config');
+
+var route_loader = require('./routes/route_loader');
 
 
 // 기본 속성 설정
@@ -109,17 +113,10 @@ function createUserSchema() {
 //===== 라우팅 함수 등록 =====//
 
 // 라우터 객체 참조
-var router = express.Router();
-
-// 로그인 라우팅 함수 - 데이터베이스의 정보와 비교
-router.route('/process/login').post(user.login);
-
-router.route('/process/adduser').post(user.adduser);
-
-router.route('/process/listuser').post(user.listuser);
+route_loader.init(app, express.Router());
 
 // 라우터 객체 등록
-app.use('/', router);
+// app.use('/', router);
 
 
 // 404 에러 페이지 처리
