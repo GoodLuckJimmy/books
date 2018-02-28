@@ -1,7 +1,7 @@
 // Express 기본 모듈 불러오기
-var express = require('express')
-    , http = require('http')
-    , path = require('path');
+var express = require('express');
+var http = require('http');
+var path = require('path');
 
 var crypto = require('crypto');
 
@@ -20,14 +20,15 @@ var expressSession = require('express-session');
 // 익스프레스 객체 생성
 var app = express();
 
-var mongoose = require('mongoose');
-
-var user = require('./routes/user');
-
 var config = require('./config/config');
 
 var route_loader = require('./routes/route_loader');
 
+var database = require('./database/database');
+
+var socketio = require('socket.io');
+
+var cors = require('cors');
 
 // 기본 속성 설정
 app.set('port', process.env.PORT || 3000);
@@ -51,73 +52,10 @@ app.use(expressSession({
     saveUninitialized:true
 }));
 
-
-//===== 데이터베이스 연결 =====//
-
-var UserSchema;
-
-var UserModel;
-
-
-// 데이터베이스 객체를 위한 변수 선언
-var database;
-
-//데이터베이스에 연결
-function connectDB() {
-    // 데이터베이스 연결 정보
-    var databaseUrl = 'mongodb://localhost:27017/local';
-
-    console.log('데이터베이스 연결을 시도합나다.');
-    mongoose.Promise = global.Promise;
-    mongoose.connect(databaseUrl);
-    database = mongoose.connection;
-
-    database.on('error', console.error.bind(console, 'monggose connection error.'));
-    database.on('open', function () {
-        console.log('데이터베이스에 연결되었습니다. : ' + databaseUrl);
-
-        createUserSchema();
-        console.log('UserSchema 정의함.');
-
-        // static(name, fn) 모델 객체에 사용할 수 있는 함수를 등록
-        UserSchema.static('findById', function (id, callback) {
-            return this.find({id:id}, callback);
-        });
-
-        UserSchema.static('findAll', function (callback) {
-            return this.find({}, callback);
-        });
-
-
-
-    });
-
-    database.on('disconnected', function () {
-        console.log('연결이 끊어 졌습니다. 5초 후 다시 연결합니다.');
-        setInterval(connectDB, 5000);
-    });
-}
-
-
-function createUserSchema() {
-    UserSchema = require('./database/user_schema').createSchema(mongoose);
-
-    UserModel = mongoose.model("users3", UserSchema);
-    console.log('UserModel 정의함');
-
-    user.init(database, UserSchema, UserModel);
-
-}
-
-
-//===== 라우팅 함수 등록 =====//
+app.use(cors());
 
 // 라우터 객체 참조
 route_loader.init(app, express.Router());
-
-// 라우터 객체 등록
-// app.use('/', router);
-
 
 // 404 에러 페이지 처리
 var errorHandler = expressErrorHandler({
@@ -131,10 +69,94 @@ app.use( errorHandler );
 
 
 // Express 서버 시작
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
     console.log('서버가 시작되었습니다. 포트 : ' + app.get('port'));
 
     // 데이터베이스 연결을 위한 함수 호출
-    connectDB();
+    database.init(app, config);
 
 });
+
+var io = socketio.listen(server);
+console.log('socket.io 요청을 받을 준비가 되었습니다.');
+
+var login_ids = {};
+
+io.sockets.on('connection', function (socket) {
+    console.log('connection info: ', socket.request.connection._peername);
+    socket.remoteAddress = socket.request.connection._peername.address;
+    socket.remotePort = socket.request.connection._peername.port;
+
+    socket.on('message', function (message) {
+        console.log('message 이벤트를 받았습니다.');
+        console.dir(message);
+
+        if (message.recepient == 'ALL') {
+            console.dir('나를 포함한 모든 사람에게 메세지 전송');
+            socket.emit('message', message);
+        } else {
+            if (login_ids[message.recepient]) {
+                io.sockets.connected[login_ids[message.recepient]].emit('message', message);
+                sendResponse(socket, 'message', '200', '메시지를 전송했습니다.');
+            } else {
+                sendResponse(socket, 'login', '404', '상대방의 로그인 ID를 찾을 수 없습니다.');
+            }
+        }
+    });
+
+    socket.on('login', function (login) {
+        console.log('login 이벤트');
+        console.dir(login);
+
+        console.log('접속한 소켓 ID: ' + socket.id);
+        login_ids[login.id] = socket.id;
+        socket.login_id = login.id;
+
+        console.log('접속한 클라이언트 ID 개수 : %d', Object.keys(login_ids).length);
+
+        sendResponse(socket, 'login', '200', '로그인 되었습니다.');
+    });
+
+    socket.on('room', function (room) {
+        console.log('room 이벤트를 받았습니다.');
+
+        if (room.command == 'create') {
+            if (io.sockets.adapter.rooms[room.roomId]) {
+                console.log('방이 이미 만들어져 있습니다.');
+            } else {
+                console.log('방을 새로 만듭니다.');
+
+                socket.join(room.roomId);
+
+                var curRoom = io.sockets.adapter.rooms[room.roomId];
+                curRoom.id = room.roomId;
+                curRoom.name = room.roomName;
+                curRoom.owner = room.roomOwner;
+
+            }
+        } else if (room.command == 'update') {
+            var curRoom = io.sockets.adapter.rooms[room.roomId];
+            curRoom.id = room.roomId;
+            curRoom.name = room.roomName;
+            curRoom.owner = room.roomOwner;
+        } else if (room.command == 'delete') {
+            socket.leave(room.roomId);
+
+            if (io.sockets.adapter.rooms[room.roomId]) {
+                delete io.sockets.adapter.rooms[room.roomId];
+            } else {
+                console.log('방이 만들어져 있지 않습니다.');
+            }
+        }
+
+        var roomList = getRoomList();
+
+        var output = {command:'list', rooms:roomList};
+        io.sockets.emit('room', output);
+    });
+});
+
+function sendResponse(socket, command, code, message) {
+    var statusObj = {command:command, code:code, message:message};
+    socket.emit('response', statusObj);
+}
