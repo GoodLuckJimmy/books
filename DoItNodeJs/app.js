@@ -160,3 +160,31 @@ function sendResponse(socket, command, code, message) {
     var statusObj = {command:command, code:code, message:message};
     socket.emit('response', statusObj);
 }
+
+function getRoomList() {
+    var roomList = [];
+
+    Object.keys(io.sockets.adapter.rooms).forEach(function (roomId) {
+        console.log('current room id: ' + roomId);
+        var outRoom = io.sockets.adapter.rooms[roomId];
+
+        var foundDefault = false;
+        var index = 0;
+        Object.keys(outRoom.sockets).forEach(function (key) {
+            if (roomId == key) {
+                foundDefault = true;
+                console.log('this is a default room');
+            }
+            index++;
+        });
+
+        if(!foundDefault) {
+            roomList.push(outRoom);
+        }
+    });
+
+    console.log('[ROOM LIST]');
+
+    return roomList;
+}
+
