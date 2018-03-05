@@ -186,5 +186,6 @@ function getRoomList() {
     console.log('[ROOM LIST]');
 
     return roomList;
+    
 }
 
