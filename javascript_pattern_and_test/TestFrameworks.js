@@ -90,3 +90,32 @@ DiContainer.prototype.get = function(name) {
     });
     return registration.func.apply(undefined, dependencies);
 };
+
+
+/**********************************************************/
+TravelService = (function(rawWebService) {
+    var conferenceAirport = 'BOS';
+    var maxArrival = new Date(/* date */);
+    var minDeparture = new Date();
+
+    var cache = [];
+
+    return {
+        getSuggestedTicket: function(homeAirport) {
+            var ticket;
+            if (cache[homeAirport]) {
+                return cache[homeAirport];
+            }
+
+            ticket = rawWebService.getCheapestRoundTrip(
+                homeAirport, conferenceAirport,
+                maxArrival, minDeparture);
+
+            cache[homeAirport] = ticket;
+
+            return ticket;
+        }
+    };
+})();
+
+TravelService.getSuggestedTicket(attendee.homeAirport);
